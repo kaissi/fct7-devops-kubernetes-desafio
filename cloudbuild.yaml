@@ -1,0 +1,42 @@
+steps:
+
+- id: "Executando os Testes Unitários"
+  name: 'gcr.io/cloud-builders/go:alpine'
+  args: [ 'test', './go/github.com/kaissi/fct7-devops-kubernetes-desafio/', '-v' ]
+  env: [ 'GOPATH=/go' ]
+
+- id: "Gerando Imagem Docker"
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - './go'
+    - '-t'
+    - 'kaissi/devops-kubernetes-desafio-go:latest'
+
+- id: "Criando container da imagem gerada"
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'run'
+    - '--rm'
+    - '--detach'
+    - '--network=cloudbuild'
+    - '--name=desafio-k8s'
+    - '--publish=8000:8000'
+    - 'kaissi/devops-kubernetes-desafio-go:latest'
+
+- id: "Testando a imagem gerada"
+  name: 'curlimages/curl'
+  args: [ '-sf', 'http://desafio-k8s:8000' ]
+
+- id: "Destruindo container"
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'rm'
+    - '-f'
+    - 'desafio-k8s'
+
+- id: "Fazendo Pussh para Docker Hub"
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'push'
+    - 'kaissi/devops-kubernetes-desafio-go:latest'
