@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: desafio-k8s
+spec:
+  selector:
+    app: desafio-k8s
+  type: LoadBalancer
+  ports:
+  - port: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: desafio-k8s
+spec:
+  selector:
+    matchLabels:
+      app: desafio-k8s
+  template:
+    metadata:
+      labels:
+        app: desafio-k8s
+    spec:
+      containers:
+      - name: desafio-k8s
+        image: kaissi/devops-kubernetes-desafio-go:latest
+        resources:
+          limits:
+            memory: "4Mi"
+            cpu: "50m"
+        ports:
+        - containerPort: 8000
