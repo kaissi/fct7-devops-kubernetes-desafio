@@ -14,6 +14,7 @@ kind: Deployment
 metadata:
   name: desafio-k8s
 spec:
+  replicas: 10
   selector:
     matchLabels:
       app: desafio-k8s
@@ -26,8 +27,11 @@ spec:
       - name: desafio-k8s
         image: kaissi/devops-kubernetes-desafio-go:latest
         resources:
+          requests:
+            memory: "8Mi"
+            cpu: "1m"
           limits:
-            memory: "4Mi"
-            cpu: "50m"
+            memory: "16Mi"
+            cpu: "5m"
         ports:
         - containerPort: 8000
