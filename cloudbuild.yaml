@@ -10,6 +10,8 @@ steps:
   args:
     - 'build'
     - './go'
+    - '-f'
+    - './go/docker/Dockerfile'
     - '-t'
     - 'kaissi/devops-kubernetes-desafio-go:latest'
 
